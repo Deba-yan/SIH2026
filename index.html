@@ -27,7 +27,7 @@
         <button class="nav" onclick="focusMap()">◈ <span>Heat Risk Map</span></button>
         <button class="nav" onclick="scrollToSection('forecast')">♨ <span>Forecast &amp; Early Alerts</span></button>
         <button class="nav" onclick="scrollToSection('calculator')">▦ <span>Human Risk Calculator</span></button>
-        <button class="nav" onclick="scrollToSection('history')">▥ <span>Seasonal Trend</span></button>
+        <button class="nav" onclick="scrollToSection('history')">📈 <span>Seasonal Trend</span></button>
         <button class="nav" onclick="scrollToSection('precautions')">♥ <span>Risk-Level Precautions</span></button>
         <button class="nav" onclick="showToast('IMD 1°×1° gridded Tmax, 2025 · RH/wind/solar modeled from regional climatology · WBGT (Aus. BoM) + Heat Index (NOAA) + composite Mortality Risk Index')">ⓘ <span>About System</span></button>
       </nav>
@@ -61,15 +61,24 @@
       </header>
 
       <div class="datebar">
-        <div class="dlabel">Simulated system date<br><b id="dateLabel">—</b></div>
-        <input type="range" id="daySlider" min="1" max="365" value="145">
-        <div class="dbtns">
-          <button id="prevBtn" title="Previous day">‹</button>
-          <button id="playBtn" class="play" title="Play">▶</button>
-          <button id="nextBtn" title="Next day">›</button>
-        </div>
-        <div class="dhint">Dataset: IMD gridded max-T, 2025 (day <span id="doyLabel">—</span>/365)</div>
-      </div>
+  <div class="dlabel">
+    Select Date<br>
+    <b id="dateLabel">—</b>
+  </div>
+
+  <input type="date" id="datePicker" min="2025-01-01" max="2025-12-31">
+
+  <div class="dbtns">
+    <button id="prevBtn" title="Previous day">‹</button>
+    <button id="playBtn" class="play" title="Play">▶</button>
+    <button id="nextBtn" title="Next day">›</button>
+  </div>
+
+  <div class="dhint">
+    Dataset: IMD gridded max-T, 2025 ·
+    Day <span id="doyLabel">—</span>/365
+  </div>
+</div>
 
       <section class="grid">
         <div class="map-card card" id="mapCard">
