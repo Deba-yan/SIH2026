@@ -10,7 +10,24 @@ function doyToDate(doy){
   while(d>MDAYS[m]){d-=MDAYS[m];m++;}
   return {day:d, month:MONTHS[m], label:`${d} ${MONTHS[m]} 2025`};
 }
+function doyToISODate(doy){
+    const date = new Date(2025, 0, doy);
 
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+
+    return `${year}-${month}-${day}`;
+}
+
+function dateToDayOfYear(dateString){
+    const date = new Date(dateString + "T00:00:00");
+    const start = new Date(2025, 0, 1);
+
+    return Math.floor(
+        (date - start) / (1000 * 60 * 60 * 24)
+    ) + 1;
+}
 /* WBGT (deg C) -> 0-100 stress score, piecewise-linear across category boundaries */
 function wbgtToScore(wbgt){
   const xs=[20,28,30,32,34,38], ys=[0,40,55,70,85,100];
@@ -336,13 +353,15 @@ function calculateRisk(){
 /* ---------- date scrubber ---------- */
 function setDoy(d){
   currentDoy = Math.max(1, Math.min(365, d));
-  document.getElementById('daySlider').value = currentDoy;
+ document.getElementById('datePicker').value = doyToISODate(currentDoy);
   const dt = doyToDate(currentDoy);
   document.getElementById('dateLabel').textContent = dt.label;
   document.getElementById('doyLabel').textContent = currentDoy;
   updateDashboard();
 }
-document.getElementById('daySlider').addEventListener('input', e=> setDoy(parseInt(e.target.value,10)) );
+document.getElementById('datePicker').addEventListener('change', e => {
+    setDoy(dateToDayOfYear(e.target.value));
+});
 document.getElementById('prevBtn').addEventListener('click', ()=> setDoy(currentDoy-1) );
 document.getElementById('nextBtn').addEventListener('click', ()=> setDoy(currentDoy+1) );
 document.getElementById('playBtn').addEventListener('click', ()=>{
