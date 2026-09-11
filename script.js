@@ -221,10 +221,60 @@ function renderEarlyWarning(){
   renderPrecautions(hit ? hit.rec.cat : rec(currentCity,currentDoy).cat);
 }
 
-function dispatchAlert(){
+async function dispatchAlert(){
+
   const hit = scanEarlyWarning(currentCity, currentDoy, 5);
-  const r = hit ? hit.rec : rec(currentCity,currentDoy);
-  showToast(`Simulated dispatch: SMS/WhatsApp sent to ${currentCity} zone authority — ${r.cat} risk, WBGT ${r.wbgt}°C`);
+  const r = hit ? hit.rec : rec(currentCity, currentDoy);
+
+  const leadTime = hit
+    ? `${hit.lead} day${hit.lead === 1 ? '' : 's'}`
+    : "Immediate";
+
+  showToast("Dispatching alert...");
+
+  try {
+
+    const response = await fetch(
+      "https://YOUR-BACKEND-NAME.onrender.com/api/send-alert",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          city: currentCity,
+          risk: r.cat,
+          wbgt: r.wbgt,
+          excessMortality: r.excess_mortality_pct,
+          leadTime: leadTime
+        })
+      }
+    );
+
+    const result = await response.json();
+
+    if (result.success) {
+
+      showToast(
+        `SMS/WhatsApp sent to ${currentCity} zone authority`
+      );
+
+    } else {
+
+      showToast(
+        `Alert failed: ${result.message}`
+      );
+
+    }
+
+  } catch (error) {
+
+    console.error(error);
+
+    showToast(
+      "Unable to connect to alert server"
+    );
+  }
 }
 
 function renderBell(){
